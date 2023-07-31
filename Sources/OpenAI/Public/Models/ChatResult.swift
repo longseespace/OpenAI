@@ -11,7 +11,7 @@ public struct ChatResult: Codable, Equatable {
     
     public struct Choice: Codable, Equatable {
       
-        public let index: Int
+        public let index: Int?
         /// Exists only if it is a complete message.
         public let message: Chat
         /// Exists only if it is a complete message.
@@ -36,9 +36,9 @@ public struct ChatResult: Codable, Equatable {
         }
     }
     
-    public let id: String
+    public let id: String?
     public let object: String
-    public let created: TimeInterval
+    public let created: TimeInterval?
     public let model: Model
     public let choices: [Choice]
     public let usage: Usage?

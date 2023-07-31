@@ -25,7 +25,7 @@ public struct ChatStreamResult: Codable, Equatable {
             }
         }
         
-        public let index: Int
+        public let index: Int?
         public let delta: Delta
         public let finishReason: String?
         
@@ -36,9 +36,9 @@ public struct ChatStreamResult: Codable, Equatable {
         }
     }
     
-    public let id: String
+    public let id: String?
     public let object: String
-    public let created: TimeInterval
+    public let created: TimeInterval?
     public let model: Model
     public let choices: [Choice]
     
