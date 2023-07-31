@@ -155,9 +155,10 @@ class OpenAITests: XCTestCase {
     }
     
     func testQueryString() throws {
+        let apiPathConfig = APIPathConfiguration()
         let pathParameter = APIPath.gpt4
-        let result = APIPath.models.withPath(pathParameter)
-        XCTAssertEqual(result, APIPath.models + "/" + pathParameter)
+        let result = apiPathConfig.models.withPath(pathParameter)
+        XCTAssertEqual(result, apiPathConfig.models + "/" + pathParameter)
     }
     
     func testRetrieveModel() async throws {
@@ -300,15 +301,25 @@ class OpenAITests: XCTestCase {
     func testDefaultHostURLBuilt() {
         let configuration = OpenAI.Configuration(token: "foo", organizationIdentifier: "bar", timeoutInterval: 14)
         let openAI = OpenAI(configuration: configuration, session: self.urlSession)
-        let completionsURL = openAI.buildURL(path: .completions)
+        let apiPathConfig = APIPathConfiguration()
+        let completionsURL = openAI.buildURL(path: apiPathConfig.completions)
         XCTAssertEqual(completionsURL, URL(string: "https://api.openai.com/v1/completions"))
     }
     
     func testCustomURLBuilt() {
         let configuration = OpenAI.Configuration(token: "foo", organizationIdentifier: "bar", host: "my.host.com", timeoutInterval: 14)
         let openAI = OpenAI(configuration: configuration, session: self.urlSession)
-        let completionsURL = openAI.buildURL(path: .completions)
+        let apiPathConfig = APIPathConfiguration()
+        let completionsURL = openAI.buildURL(path: apiPathConfig.completions)
         XCTAssertEqual(completionsURL, URL(string: "https://my.host.com/v1/completions"))
+    }
+    
+    func testURLWithQueryParamsBuilt() {
+        let apiPathConfig = APIPathConfiguration(chats: "/chat/completions?api-version=2023-01-01")
+        let configuration = OpenAI.Configuration(token: "foo", baseURL: URL(string: "https://my.host.com")!, apiPath: apiPathConfig)
+        let openAI = OpenAI(configuration: configuration, session: self.urlSession)
+        let completionsURL = openAI.buildURL(path: apiPathConfig.chats)
+        XCTAssertEqual(completionsURL, URL(string: "https://my.host.com/chat/completions?api-version=2023-01-01"))
     }
 }
 
