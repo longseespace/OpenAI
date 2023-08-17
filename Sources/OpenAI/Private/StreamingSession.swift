@@ -22,7 +22,7 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
     var onComplete: ((StreamingSession, Error?) -> Void)?
     
     private let streamingCompletionMarker = "[DONE]"
-    private let openrouterMarker = ": OPENROUTER"
+    private let commentMarker = ":"
     private let urlRequest: URLRequest
     private lazy var urlSession: URLSession = {
         let session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
@@ -52,7 +52,7 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
             .components(separatedBy: "data:")
             .filter { $0.isEmpty == false }
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { $0.starts(with: openrouterMarker) == false }
+            .filter { $0.starts(with: commentMarker) == false }
         guard jsonObjects.isEmpty == false, jsonObjects.first != streamingCompletionMarker else {
             return
         }
