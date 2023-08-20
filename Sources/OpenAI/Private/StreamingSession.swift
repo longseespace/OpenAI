@@ -49,10 +49,11 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
             return
         }
         let jsonObjects = stringContent
-            .components(separatedBy: "data:")
+            .components(separatedBy: "\n")
             .filter { $0.isEmpty == false }
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { $0.starts(with: commentMarker) == false }
+            .filter { $0.starts(with: "data: ") }
+            .map { String($0.dropFirst("data: ".count)) }
         guard jsonObjects.isEmpty == false, jsonObjects.first != streamingCompletionMarker else {
             return
         }
