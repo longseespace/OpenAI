@@ -21,6 +21,7 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
     var onProcessingError: ((StreamingSession, Error) -> Void)?
     var onComplete: ((StreamingSession, Error?) -> Void)?
     
+    private var partialContent = ""
     private let streamingCompletionMarker = "[DONE]"
     private let commentMarker = ":"
     private let urlRequest: URLRequest
@@ -48,7 +49,7 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
             onProcessingError?(self, StreamingError.unknownContent)
             return
         }
-        let jsonObjects = stringContent
+        let jsonObjects = "\(partialContent)\(stringContent)"
             .components(separatedBy: "\n")
             .filter { $0.isEmpty == false }
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -57,7 +58,7 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
         guard jsonObjects.isEmpty == false, jsonObjects.first != streamingCompletionMarker else {
             return
         }
-        jsonObjects.forEach { jsonContent  in
+        jsonObjects.enumerated().forEach { (index, jsonContent)  in
             guard jsonContent != streamingCompletionMarker else {
                 return
             }
@@ -72,7 +73,12 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
                 let object = try decoder.decode(ResultType.self, from: jsonData)
                 onReceiveContent?(self, object)
             } catch {
-                apiError = error
+                // if decoding error on last item, it's most likely a partial chunk, keep it around as leftover characters for the next call
+                if index == jsonObjects.count - 1 {
+                    partialContent = "data: \(jsonContent)"
+                } else {
+                    apiError = error
+                }
             }
             
             if let apiError = apiError {
