@@ -49,6 +49,16 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
             onProcessingError?(self, StreamingError.unknownContent)
             return
         }
+        
+        // first, check if it's an error
+        do {
+            let decoded = try JSONDecoder().decode(APIErrorResponse.self, from: data)
+            onProcessingError?(self, decoded)
+            return
+        } catch {
+            // not an JSON error, continue
+        }
+        
         let jsonObjects = "\(partialContent)\(stringContent)"
             .components(separatedBy: "\n")
             .filter { $0.isEmpty == false }
