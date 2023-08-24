@@ -82,6 +82,10 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
                 let decoder = JSONDecoder()
                 let object = try decoder.decode(ResultType.self, from: jsonData)
                 onReceiveContent?(self, object)
+                
+                if index == jsonObjects.count - 1 {
+                    partialContent = ""
+                }
             } catch {
                 // if decoding error on last item, it's most likely a partial chunk, keep it around as leftover characters for the next call
                 if index == jsonObjects.count - 1 {
