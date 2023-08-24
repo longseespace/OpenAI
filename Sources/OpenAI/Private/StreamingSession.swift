@@ -21,6 +21,7 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
     var onProcessingError: ((StreamingSession, Error) -> Void)?
     var onComplete: ((StreamingSession, Error?) -> Void)?
     
+    private var errorChecked = false
     private var partialContent = ""
     private let streamingCompletionMarker = "[DONE]"
     private let commentMarker = ":"
@@ -51,12 +52,16 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
         }
         
         // first, check if it's an error
-        do {
-            let decoded = try JSONDecoder().decode(APIErrorResponse.self, from: data)
-            onProcessingError?(self, decoded)
-            return
-        } catch {
-            // not an JSON error, continue
+        if !errorChecked {
+            do {
+                let decoded = try JSONDecoder().decode(APIErrorResponse.self, from: data)
+                onProcessingError?(self, decoded)
+                return
+            } catch {
+                // not an JSON error, continue
+            }
+            
+            errorChecked = true
         }
         
         let jsonObjects = "\(partialContent)\(stringContent)"
