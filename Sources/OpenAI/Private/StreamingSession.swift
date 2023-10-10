@@ -66,7 +66,13 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
             // Setapp, I'm looking at you
             if let httpResponse = dataTask.response as? HTTPURLResponse {
                 if httpResponse.statusCode == 429 {
-                    let error = APIError(message: "Rate limit exceeded. Please try again later.", type: "rate_limit_error", param: "", code: "429")
+                    var message = "Rate limit exceeded. Please try again later."
+                    if #available(macOS 10.15, *) {
+                        if let retryAfter = httpResponse.value(forHTTPHeaderField: "retry-after") {
+                            message = "Rate limit exceeded. Please try again after \(retryAfter) seconds."
+                        }
+                    }
+                    let error = APIError(message: message, type: "rate_limit_error", param: "", code: "429")
                     let errorResponse = APIErrorResponse(error: error)
                     onProcessingError?(self, errorResponse)
                     return
