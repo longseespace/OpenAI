@@ -53,12 +53,31 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
         
         // first, check if it's an error
         if !errorChecked {
+            // json error
             do {
                 let decoded = try JSONDecoder().decode(APIErrorResponse.self, from: data)
                 onProcessingError?(self, decoded)
                 return
             } catch {
                 // not an JSON error, continue
+            }
+            
+            // not json error, but status code is not OK
+            // Setapp, I'm looking at you
+            if let httpResponse = dataTask.response as? HTTPURLResponse {
+                if httpResponse.statusCode == 429 {
+                    let error = APIError(message: "Rate limit exceeded. Please try again later.", type: "rate_limit_error", param: "", code: "429")
+                    let errorResponse = APIErrorResponse(error: error)
+                    onProcessingError?(self, errorResponse)
+                    return
+                }
+                
+                if httpResponse.statusCode >= 400 {
+                    let error = APIError(message: "An error occurred. Please try again later.", type: "server_error", param: "", code: String(httpResponse.statusCode))
+                    let errorResponse = APIErrorResponse(error: error)
+                    onProcessingError?(self, errorResponse)
+                    return
+                }
             }
             
             errorChecked = true
