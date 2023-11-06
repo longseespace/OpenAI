@@ -36,6 +36,13 @@ public extension Model {
     static let gpt3_5Turbo_16k = "gpt-3.5-turbo-16k"
     /// Snapshot of gpt-3.5-turbo-16k from June 13th 2023. Unlike gpt-3.5-turbo-16k, this model will not receive updates, and will be deprecated 3 months after a new version is released.
     static let gpt3_5Turbo_16k_0613 = "gpt-3.5-turbo-16k-0613"
+    
+    static let gpt4_1106_preview = "gpt-4-1106-preview"
+    static let gpt4_vision_preview = "gpt-4-vision-preview"
+    
+    // Images
+    static let dalle2 = "dall-e-2"
+    static let dalle3 = "dall-e-3"
 
     // Completions
     
