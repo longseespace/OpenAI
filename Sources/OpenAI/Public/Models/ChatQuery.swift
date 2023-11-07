@@ -9,6 +9,10 @@ import Foundation
 
 public struct ImageURL: Codable {
     let url: String
+    
+    public init(url: String) {
+        self.url = url
+    }
 }
 
 public struct ChatContentItem: Codable {
@@ -20,11 +24,26 @@ public struct ChatContentItem: Codable {
         case type, text
         case imageUrl = "image_url"
     }
+    
+    public init(type: String, text: String? = nil, imageUrl: ImageURL? = nil) {
+        self.type = type
+        self.text = text
+        self.imageUrl = imageUrl
+    }
 }
 
 public enum ChatInputContent {
     case string(String)
     case items([ChatContentItem])
+    
+    public var stringValue: String {
+        switch self {
+        case .string(let stringValue):
+            return stringValue
+        case .items:
+            return ""
+        }
+    }
 }
 
 extension ImageURL: Equatable {
