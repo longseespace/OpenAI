@@ -65,6 +65,8 @@ public extension Model {
     // Transcriptions / Translations
     
     static let whisper_1 = "whisper-1"
+    static let tts_1 = "tts-1"
+    static let tts_1_hd = "tts-1-hd"
     
     // Fine Tunes
     

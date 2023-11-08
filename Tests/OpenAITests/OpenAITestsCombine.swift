@@ -123,6 +123,15 @@ final class OpenAITestsCombine: XCTestCase {
         let result = try awaitPublisher(openAI.audioTranslations(query: query))
         XCTAssertEqual(result, transcriptionResult)
     }
+    
+    func testAudioSpeech() throws {
+        let query = AudioSpeechQuery(model: .tts_1, input: "This is a test", voice: "alloy", responseFormat: "mp3", speed: 1.0)
+        let url = URL(string: "https://openai.com/speech.mp3")!
+        try self.stub(downloadResult: url)
+        
+        let result = try awaitPublisher(openAI.audioSpeech(query: query))
+        XCTAssertEqual(result, url)
+    }
 }
 
 @available(tvOS 13.0, *)
@@ -141,6 +150,17 @@ extension OpenAITestsCombine {
         let data = try encoder.encode(result)
         let task = DataTaskMock.successful(with: data)
         self.urlSession.dataTask = task
+    }
+    
+    func stub(downloadError: Error) {
+        let error = APIError(message: "foo", type: "bar", param: "baz", code: "100")
+        let task = DownloadTaskMock.failed(with: error)
+        self.urlSession.downloadTask = task
+    }
+    
+    func stub(downloadResult: URL) throws {
+        let task = DownloadTaskMock.successful(with: downloadResult)
+        self.urlSession.downloadTask = task
     }
 }
 

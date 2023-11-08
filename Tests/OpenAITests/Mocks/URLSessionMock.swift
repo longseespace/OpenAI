@@ -14,6 +14,7 @@ import FoundationNetworking
 class URLSessionMock: URLSessionProtocol {
     
     var dataTask: DataTaskMock!
+    var downloadTask: DownloadTaskMock!
     
     func dataTask(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTaskProtocol {
         dataTask.completion = completionHandler
@@ -22,5 +23,10 @@ class URLSessionMock: URLSessionProtocol {
     
     func dataTask(with request: URLRequest) -> URLSessionDataTaskProtocol {
         dataTask
+    }
+    
+    func downloadTask(with request: URLRequest, completionHandler: @escaping @Sendable (URL?, URLResponse?, Error?) -> Void) -> URLSessionDownloadTaskProtocol {
+        downloadTask.completion = completionHandler
+        return downloadTask
     }
 }

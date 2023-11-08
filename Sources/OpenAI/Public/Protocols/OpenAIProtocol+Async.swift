@@ -183,4 +183,19 @@ public extension OpenAIProtocol {
             }
         }
     }
+    
+    func audioSpeech(
+        query: AudioSpeechQuery
+    ) async throws -> URL {
+        try await withCheckedThrowingContinuation { continuation in
+            audioSpeech(query: query) { result in
+                switch result {
+                case let .success(success):
+                    return continuation.resume(returning: success)
+                case let .failure(failure):
+                    return continuation.resume(throwing: failure)
+                }
+            }
+        }
+    }
 }

@@ -124,6 +124,10 @@ final public class OpenAI: OpenAIProtocol {
     public func audioTranslations(query: AudioTranslationQuery, completion: @escaping (Result<AudioTranslationResult, Error>) -> Void) {
         performRequest(request: MultipartFormDataRequest<AudioTranslationResult>(body: query, url: buildURL(path: configuration.apiPath.audioTranslations)), completion: completion)
     }
+    
+    public func audioSpeech(query: AudioSpeechQuery, completion: @escaping (Result<URL, Error>) -> Void) {
+        performDownloadRequest(request: JSONRequest<URL>(body: query, url: buildURL(path: configuration.apiPath.audioSpeech)), completion: completion)
+    }
 }
 
 extension OpenAI {
@@ -184,6 +188,27 @@ extension OpenAI {
             completion?(error)
         }
     }
+    
+    func performDownloadRequest(request: any URLRequestBuildable, completion: @escaping (Result<URL, Error>) -> Void) {
+        do {
+            let request = try request.build(token: configuration.token, organizationIdentifier: configuration.organizationIdentifier, timeoutInterval: configuration.timeoutInterval, customHeaders: configuration.customHeaders)
+            let task = session.downloadTask(with: request) { url, _, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                guard let url else {
+                    completion(.failure(OpenAIError.emptyData))
+                    return
+                }
+
+                completion(.success(url))
+            }
+            task.resume()
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 extension OpenAI {
@@ -212,8 +237,9 @@ public struct APIPathConfiguration {
     
     let audioTranscriptions: APIPath
     let audioTranslations: APIPath
+    let audioSpeech: APIPath
     
-    public init(completions: String = "/v1/completions", images: String = "/v1/images/generations", embeddings: String = "/v1/embeddings", chats: String = "/v1/chat/completions", edits: String = "/v1/edits", models: String = "/v1/models", moderations: String = "/v1/moderations", audioTranscriptions: String = "/v1/audio/transcriptions", audioTranslations: String = "/v1/audio/translations") {
+    public init(completions: String = "/v1/completions", images: String = "/v1/images/generations", embeddings: String = "/v1/embeddings", chats: String = "/v1/chat/completions", edits: String = "/v1/edits", models: String = "/v1/models", moderations: String = "/v1/moderations", audioTranscriptions: String = "/v1/audio/transcriptions", audioTranslations: String = "/v1/audio/translations", audioSpeech: String = "/v1/audio/speech") {
         self.completions = completions
         self.images = images
         self.embeddings = embeddings
@@ -223,5 +249,6 @@ public struct APIPathConfiguration {
         self.moderations = moderations
         self.audioTranscriptions = audioTranscriptions
         self.audioTranslations = audioTranslations
+        self.audioSpeech = audioSpeech
     }
 }

@@ -196,4 +196,13 @@ public protocol OpenAIProtocol {
                          Returns a `Result` of type `AudioTranslationResult` if successful, or an `Error` if an error occurs.
      **/
     func audioTranslations(query: AudioTranslationQuery, completion: @escaping (Result<AudioTranslationResult, Error>) -> Void)
+    
+    /**
+     Generates audio from the input text using OpenAI's text-to-speech API and completes the operation asynchronously.
+
+    - Parameter query: The `AudioSpeechQuery` instance, containing the information required for the tts request.
+    - Parameter completion: The completion handler to be executed upon completion of the translation request.
+                         Returns a `Result` of type `URL` if successful, or an `Error` if an error occurs.
+     **/
+    func audioSpeech(query: AudioSpeechQuery, completion: @escaping (Result<URL, Error>) -> Void)
 }

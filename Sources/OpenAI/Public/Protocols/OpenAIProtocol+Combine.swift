@@ -8,6 +8,7 @@
 #if canImport(Combine)
 
 import Combine
+import Foundation
 
 @available(iOS 13.0, *)
 @available(tvOS 13.0, *)
@@ -109,6 +110,13 @@ public extension OpenAIProtocol {
     func audioTranslations(query: AudioTranslationQuery) -> AnyPublisher<AudioTranslationResult, Error> {
         Future<AudioTranslationResult, Error> {
             audioTranslations(query: query, completion: $0)
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func audioSpeech(query: AudioSpeechQuery) -> AnyPublisher<URL, Error> {
+        Future<URL, Error> {
+            audioSpeech(query: query, completion: $0)
         }
         .eraseToAnyPublisher()
     }
