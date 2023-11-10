@@ -10,10 +10,8 @@ import Foundation
 import FoundationNetworking
 #endif
 
-final public class OpenAI: OpenAIProtocol {
-
+public final class OpenAI: OpenAIProtocol {
     public struct Configuration {
-        
         /// OpenAI API token. See https://platform.openai.com/docs/api-reference/authentication
         public let token: String
         
@@ -21,7 +19,7 @@ final public class OpenAI: OpenAIProtocol {
         public let organizationIdentifier: String?
         
         /// Optional Custom Headers to be sent with the request
-        public let customHeaders: [String : String]
+        public let customHeaders: [String: String]
         
         /// Optional API Base URL, default https://api.openai.com
         public let baseURL: URL
@@ -45,7 +43,7 @@ final public class OpenAI: OpenAIProtocol {
             }
         }
         
-        public init(token: String, baseURL: URL = URL(string: "https://api.openai.com")!, apiPath: APIPathConfiguration = APIPathConfiguration(), customHeaders: [String : String] = [:], timeoutInterval: TimeInterval = 60.0) {
+        public init(token: String, baseURL: URL = URL(string: "https://api.openai.com")!, apiPath: APIPathConfiguration = APIPathConfiguration(), customHeaders: [String: String] = [:], timeoutInterval: TimeInterval = 60.0) {
             self.token = token
             self.timeoutInterval = timeoutInterval
             self.customHeaders = customHeaders
@@ -125,13 +123,12 @@ final public class OpenAI: OpenAIProtocol {
         performRequest(request: MultipartFormDataRequest<AudioTranslationResult>(body: query, url: buildURL(path: configuration.apiPath.audioTranslations)), completion: completion)
     }
     
-    public func audioSpeech(query: AudioSpeechQuery, completion: @escaping (Result<URL, Error>) -> Void) {
-        performDownloadRequest(request: JSONRequest<URL>(body: query, url: buildURL(path: configuration.apiPath.audioSpeech)), completion: completion)
+    public func audioSpeech(query: AudioSpeechQuery, outputFileURL: URL, completion: @escaping (Result<URL, Error>) -> Void) {
+        performDownloadRequest(request: JSONRequest<URL>(body: query, url: buildURL(path: configuration.apiPath.audioSpeech)), outputFileURL: outputFileURL, completion: completion)
     }
 }
 
 extension OpenAI {
-
     func performRequest<ResultType: Codable>(request: any URLRequestBuildable, completion: @escaping (Result<ResultType, Error>) -> Void) {
         do {
             let request = try request.build(token: configuration.token, organizationIdentifier: configuration.organizationIdentifier, timeoutInterval: configuration.timeoutInterval, customHeaders: configuration.customHeaders)
@@ -145,7 +142,7 @@ extension OpenAI {
                     return
                 }
 
-                var apiError: Error? = nil
+                var apiError: Error?
                 do {
                     let decoded = try JSONDecoder().decode(ResultType.self, from: data)
                     completion(.success(decoded))
@@ -172,10 +169,10 @@ extension OpenAI {
         do {
             let request = try request.build(token: configuration.token, organizationIdentifier: configuration.organizationIdentifier, timeoutInterval: configuration.timeoutInterval, customHeaders: configuration.customHeaders)
             let session = StreamingSession<ResultType>(urlRequest: request)
-            session.onReceiveContent = {_, object in
+            session.onReceiveContent = { _, object in
                 onResult(.success(object))
             }
-            session.onProcessingError = {_, error in
+            session.onProcessingError = { _, error in
                 onResult(.failure(error))
             }
             session.onComplete = { [weak self] object, error in
@@ -189,7 +186,7 @@ extension OpenAI {
         }
     }
     
-    func performDownloadRequest(request: any URLRequestBuildable, completion: @escaping (Result<URL, Error>) -> Void) {
+    func performDownloadRequest(request: any URLRequestBuildable, outputFileURL: URL, completion: @escaping (Result<URL, Error>) -> Void) {
         do {
             let request = try request.build(token: configuration.token, organizationIdentifier: configuration.organizationIdentifier, timeoutInterval: configuration.timeoutInterval, customHeaders: configuration.customHeaders)
             let task = session.downloadTask(with: request) { url, _, error in
@@ -201,8 +198,21 @@ extension OpenAI {
                     completion(.failure(OpenAIError.emptyData))
                     return
                 }
-
-                completion(.success(url))
+                
+                // this tmp url might be deleted, so we move it to another place
+                let fileManager = FileManager.default
+                       
+                do {
+                    // If file exists at newURL, remove it (optional)
+                    if fileManager.fileExists(atPath: outputFileURL.path) {
+                        try fileManager.removeItem(at: outputFileURL)
+                    }
+                           
+                    try fileManager.moveItem(at: url, to: outputFileURL)
+                    completion(.success(outputFileURL))
+                } catch {
+                    completion(.failure(error))
+                }
             }
             task.resume()
         } catch {
@@ -212,7 +222,6 @@ extension OpenAI {
 }
 
 extension OpenAI {
-    
     func buildURL(path: String) -> URL {
         let urlString = configuration.baseURL.absoluteString.appending(path)
         return URL(string: urlString)!

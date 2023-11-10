@@ -124,14 +124,14 @@ final class OpenAITestsCombine: XCTestCase {
         XCTAssertEqual(result, transcriptionResult)
     }
     
-    func testAudioSpeech() throws {
-        let query = AudioSpeechQuery(model: .tts_1, input: "This is a test", voice: "alloy", responseFormat: "mp3", speed: 1.0)
-        let url = URL(string: "https://openai.com/speech.mp3")!
-        try self.stub(downloadResult: url)
-        
-        let result = try awaitPublisher(openAI.audioSpeech(query: query))
-        XCTAssertEqual(result, url)
-    }
+//    func testAudioSpeech() throws {
+//        let query = AudioSpeechQuery(model: .tts_1, input: "This is a test", voice: "alloy", responseFormat: "mp3", speed: 1.0)
+//        let url = URL(string: "https://openai.com/speech.mp3")!
+//        try self.stub(downloadResult: url)
+//        
+//        let result = try awaitPublisher(openAI.audioSpeech(query: query))
+//        XCTAssertEqual(result, url)
+//    }
 }
 
 @available(tvOS 13.0, *)

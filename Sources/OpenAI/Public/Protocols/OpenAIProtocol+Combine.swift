@@ -114,9 +114,9 @@ public extension OpenAIProtocol {
         .eraseToAnyPublisher()
     }
     
-    func audioSpeech(query: AudioSpeechQuery) -> AnyPublisher<URL, Error> {
+    func audioSpeech(query: AudioSpeechQuery, outputFileURL: URL) -> AnyPublisher<URL, Error> {
         Future<URL, Error> {
-            audioSpeech(query: query, completion: $0)
+            audioSpeech(query: query, outputFileURL: outputFileURL, completion: $0)
         }
         .eraseToAnyPublisher()
     }

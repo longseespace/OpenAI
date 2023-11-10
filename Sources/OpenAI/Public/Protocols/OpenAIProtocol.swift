@@ -201,8 +201,9 @@ public protocol OpenAIProtocol {
      Generates audio from the input text using OpenAI's text-to-speech API and completes the operation asynchronously.
 
     - Parameter query: The `AudioSpeechQuery` instance, containing the information required for the tts request.
+    - Parameter outputFileURL: The file will be saved to this file URL
     - Parameter completion: The completion handler to be executed upon completion of the translation request.
                          Returns a `Result` of type `URL` if successful, or an `Error` if an error occurs.
      **/
-    func audioSpeech(query: AudioSpeechQuery, completion: @escaping (Result<URL, Error>) -> Void)
+    func audioSpeech(query: AudioSpeechQuery, outputFileURL: URL, completion: @escaping (Result<URL, Error>) -> Void)
 }
