@@ -79,7 +79,7 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
                 }
                 
                 if httpResponse.statusCode >= 400 {
-                    let error = APIError(message: "An error occurred. Please try again later.", type: "server_error", param: "", code: String(httpResponse.statusCode))
+                    let error = APIError(message: "An error occurred (code \(httpResponse.statusCode). Please try again later.", type: "server_error", param: "", code: String(httpResponse.statusCode))
                     let errorResponse = APIErrorResponse(error: error)
                     onProcessingError?(self, errorResponse)
                     return
