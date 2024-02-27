@@ -163,7 +163,7 @@ class OpenAITests: XCTestCase {
     
     func testRetrieveModel() async throws {
         let query = ModelQuery(model: .gpt4)
-        let modelResult = ModelResult(id: .gpt4, object: "model", ownedBy: "organization-owner")
+        let modelResult = ModelResult(id: .gpt4, object: "model", ownedBy: "organization-owner", created: 0)
         try self.stub(result: modelResult)
         
         let result = try await openAI.model(query: query)
@@ -181,9 +181,9 @@ class OpenAITests: XCTestCase {
     
     func testListModels() async throws {
         let listModelsResult = ModelsResult(data: [
-            .init(id: "model-id-0", object: "model", ownedBy: "organization-owner"),
-            .init(id: "model-id-1", object: "model", ownedBy: "organization-owner"),
-            .init(id: "model-id-2", object: "model", ownedBy: "openai")
+            .init(id: "model-id-0", object: "model", ownedBy: "organization-owner", created: 0),
+            .init(id: "model-id-1", object: "model", ownedBy: "organization-owner", created: 0),
+            .init(id: "model-id-2", object: "model", ownedBy: "openai", created: 0)
         ], object: "list")
         try self.stub(result: listModelsResult)
         

@@ -76,7 +76,7 @@ final class OpenAITestsCombine: XCTestCase {
     
     func testRetrieveModel() throws {
         let query = ModelQuery(model: .gpt4)
-        let modelResult = ModelResult(id: .gpt4, object: "model", ownedBy: "organization-owner")
+        let modelResult = ModelResult(id: .gpt4, object: "model", ownedBy: "organization-owner", created: 0)
         try self.stub(result: modelResult)
         
         let result = try awaitPublisher(openAI.model(query: query))

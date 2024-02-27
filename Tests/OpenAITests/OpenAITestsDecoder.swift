@@ -285,9 +285,9 @@ class OpenAITestsDecoder: XCTestCase {
         """
         
         let expectedValue = ModelsResult(data: [
-            .init(id: .gpt3_5Turbo, object: "model", ownedBy: "organization-owner"),
-            .init(id: .gpt4, object: "model", ownedBy: "organization-owner"),
-            .init(id: .textDavinci_001, object: "model", ownedBy: "openai")
+            .init(id: .gpt3_5Turbo, object: "model", ownedBy: "organization-owner", created: 0),
+            .init(id: .gpt4, object: "model", ownedBy: "organization-owner", created: 0),
+            .init(id: .textDavinci_001, object: "model", ownedBy: "openai", created: 0)
         ], object: "list")
         try decode(data, expectedValue)
     }
@@ -301,7 +301,7 @@ class OpenAITestsDecoder: XCTestCase {
         }
         """
         
-        let expectedValue = ModelResult(id: .textDavinci_003, object: "model", ownedBy: "openai")
+        let expectedValue = ModelResult(id: .textDavinci_003, object: "model", ownedBy: "openai", created: 0)
         try decode(data, expectedValue)
     }
     
