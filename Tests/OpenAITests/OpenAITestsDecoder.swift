@@ -267,17 +267,20 @@ class OpenAITestsDecoder: XCTestCase {
             {
               "id": "gpt-3.5-turbo",
               "object": "model",
-              "owned_by": "organization-owner"
+              "owned_by": "organization-owner",
+              "created": 0
             },
             {
               "id": "gpt-4",
               "object": "model",
-              "owned_by": "organization-owner"
+              "owned_by": "organization-owner",
+              "created": 0
             },
             {
               "id": "text-davinci-001",
               "object": "model",
-              "owned_by": "openai"
+              "owned_by": "openai",
+              "created": 0
             }
           ],
           "object": "list"
@@ -297,7 +300,8 @@ class OpenAITestsDecoder: XCTestCase {
         {
           "id": "text-davinci-003",
           "object": "model",
-          "owned_by": "openai"
+          "owned_by": "openai",
+          "created": 0
         }
         """
         

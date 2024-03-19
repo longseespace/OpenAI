@@ -13,11 +13,11 @@ public enum OpenAIError: Error {
 
 public struct APIError: Error, Decodable, Equatable {
     public let message: String
-    public let type: String
+    public let type: String?
     public let param: String?
     public let code: String?
   
-  public init(message: String, type: String, param: String?, code: String?) {
+  public init(message: String, type: String?, param: String?, code: String?) {
     self.message = message
     self.type = type
     self.param = param
@@ -45,7 +45,7 @@ public struct APIError: Error, Decodable, Equatable {
       throw DecodingError.typeMismatch(String.self, .init(codingPath: [CodingKeys.message], debugDescription: "message: expected String or [String]"))
     }
     
-    self.type = try container.decode(String.self, forKey: .type)
+    self.type = try container.decodeIfPresent(String.self, forKey: .type)
     self.param = try container.decodeIfPresent(String.self, forKey: .param)
     self.code = try container.decodeIfPresent(String.self, forKey: .code)
   }
