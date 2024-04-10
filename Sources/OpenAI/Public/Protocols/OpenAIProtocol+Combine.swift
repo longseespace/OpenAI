@@ -43,6 +43,20 @@ public extension OpenAIProtocol {
         }
         .eraseToAnyPublisher()
     }
+    
+    func imageEdits(query: ImageEditsQuery) -> AnyPublisher<ImagesResult, Error> {
+        Future<ImagesResult, Error> {
+            imageEdits(query: query, completion: $0)
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func imageVariations(query: ImageVariationsQuery) -> AnyPublisher<ImagesResult, Error> {
+        Future<ImagesResult, Error> {
+            imageVariations(query: query, completion: $0)
+        }
+        .eraseToAnyPublisher()
+    }
 
     func embeddings(query: EmbeddingsQuery) -> AnyPublisher<EmbeddingsResult, Error> {
         Future<EmbeddingsResult, Error> {
@@ -96,6 +110,13 @@ public extension OpenAIProtocol {
     func moderations(query: ModerationsQuery) -> AnyPublisher<ModerationsResult, Error> {
         Future<ModerationsResult, Error> {
             moderations(query: query, completion: $0)
+        }
+        .eraseToAnyPublisher()
+    }
+
+    func audioCreateSpeech(query: AudioSpeechQuery) -> AnyPublisher<AudioSpeechResult, Error> {
+        Future<AudioSpeechResult, Error> {
+            audioCreateSpeech(query: query, completion: $0)
         }
         .eraseToAnyPublisher()
     }
