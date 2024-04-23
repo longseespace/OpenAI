@@ -79,8 +79,8 @@ public final class OpenAI: OpenAIProtocol {
         performRequest(request: JSONRequest<CompletionsResult>(body: query, url: buildURL(path: configuration.apiPath.completions)), completion: completion)
     }
     
-    public func completionsStream(query: CompletionsQuery, onResult: @escaping (Result<CompletionsResult, Error>) -> Void, completion: ((Error?) -> Void)?) {
-        performSteamingRequest(request: JSONRequest<CompletionsResult>(body: query.makeStreamable(), url: buildURL(path: configuration.apiPath.completions)), onResult: onResult, completion: completion)
+    public func completionsStream(query: CompletionsQuery, control: StreamControl, onResult: @escaping (Result<CompletionsResult, Error>) -> Void, completion: ((Error?) -> Void)?) {
+        performSteamingRequest(request: JSONRequest<CompletionsResult>(body: query.makeStreamable(), url: buildURL(path: configuration.apiPath.completions)), control: control, onResult: onResult, completion: completion)
     }
     
     public func images(query: ImagesQuery, completion: @escaping (Result<ImagesResult, Error>) -> Void) {
@@ -95,8 +95,8 @@ public final class OpenAI: OpenAIProtocol {
         performRequest(request: JSONRequest<ChatResult>(body: query, url: buildURL(path: configuration.apiPath.chats)), completion: completion)
     }
     
-    public func chatsStream(query: ChatQuery, onResult: @escaping (Result<ChatStreamResult, Error>) -> Void, completion: ((Error?) -> Void)?) {
-        performSteamingRequest(request: JSONRequest<ChatResult>(body: query.makeStreamable(), url: buildURL(path: configuration.apiPath.chats)), onResult: onResult, completion: completion)
+    public func chatsStream(query: ChatQuery, control: StreamControl, onResult: @escaping (Result<ChatStreamResult, Error>) -> Void, completion: ((Error?) -> Void)?) {
+        performSteamingRequest(request: JSONRequest<ChatResult>(body: query.makeStreamable(), url: buildURL(path: configuration.apiPath.chats)), control: control, onResult: onResult, completion: completion)
     }
     
     public func edits(query: EditsQuery, completion: @escaping (Result<EditsResult, Error>) -> Void) {
@@ -165,10 +165,11 @@ extension OpenAI {
         }
     }
     
-    func performSteamingRequest<ResultType: Codable>(request: any URLRequestBuildable, onResult: @escaping (Result<ResultType, Error>) -> Void, completion: ((Error?) -> Void)?) {
+    func performSteamingRequest<ResultType: Codable>(request: any URLRequestBuildable, control: StreamControl, onResult: @escaping (Result<ResultType, Error>) -> Void, completion: ((Error?) -> Void)?) {
         do {
             let request = try request.build(token: configuration.token, organizationIdentifier: configuration.organizationIdentifier, timeoutInterval: configuration.timeoutInterval, customHeaders: configuration.customHeaders)
             let session = StreamingSession<ResultType>(urlRequest: request)
+            control.setSession(session as! StreamingSession<ChatStreamResult>)
             session.onReceiveContent = { _, object in
                 onResult(.success(object))
             }
