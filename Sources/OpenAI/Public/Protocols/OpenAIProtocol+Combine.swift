@@ -72,7 +72,7 @@ public extension OpenAIProtocol {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func chatsStream(query: ChatQuery) -> AnyPublisher<Result<ChatStreamResult, Error>, Error> {
         let progress = PassthroughSubject<Result<ChatStreamResult, Error>, Error>()
         let control = StreamControl()
@@ -87,7 +87,7 @@ public extension OpenAIProtocol {
         }
         return progress.eraseToAnyPublisher()
     }
-    
+
     func edits(query: EditsQuery) -> AnyPublisher<EditsResult, Error> {
         Future<EditsResult, Error> {
             edits(query: query, completion: $0)
@@ -121,6 +121,20 @@ public extension OpenAIProtocol {
             audioCreateSpeech(query: query, completion: $0)
         }
         .eraseToAnyPublisher()
+    }
+
+    func audioCreateSpeechStream(query: AudioSpeechQuery) -> AnyPublisher<Result<AudioSpeechResult, Error>, Error> {
+        let progress = PassthroughSubject<Result<AudioSpeechResult, Error>, Error>()
+        audioCreateSpeechStream(query: query) { result in
+            progress.send(result)
+        } completion: { error in
+            if let error {
+                progress.send(completion: .failure(error))
+            } else {
+                progress.send(completion: .finished)
+            }
+        }
+        return progress.eraseToAnyPublisher()
     }
 
     func audioTranscriptions(query: AudioTranscriptionQuery) -> AnyPublisher<AudioTranscriptionResult, Error> {

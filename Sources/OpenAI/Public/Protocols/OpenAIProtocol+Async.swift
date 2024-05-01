@@ -125,7 +125,7 @@ public extension OpenAIProtocol {
         let control = StreamControl()
         
         return AsyncThrowingStream { continuation in
-            chatsStream(query: query, control: control)  { result in
+            return chatsStream(query: query, control: control) { result in
                 continuation.yield(with: result)
             } completion: { error in
                 continuation.finish(throwing: error)
@@ -209,7 +209,19 @@ public extension OpenAIProtocol {
             }
         }
     }
-    
+
+    func audioCreateSpeechStream(
+        query: AudioSpeechQuery
+    ) -> AsyncThrowingStream<AudioSpeechResult, Error> {
+        return AsyncThrowingStream { continuation in
+            return audioCreateSpeechStream(query: query) { result in
+                continuation.yield(with: result)
+            } completion: { error in
+                continuation.finish(throwing: error)
+            }
+        }
+    }
+
     func audioTranscriptions(
         query: AudioTranscriptionQuery
     ) async throws -> AudioTranscriptionResult {
