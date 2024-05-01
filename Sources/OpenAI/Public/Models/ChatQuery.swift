@@ -523,7 +523,7 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                 /// The function that the model called.
                 public let function: Self.FunctionCall
                 /// The type of the tool. Currently, only `function` is supported.
-                public let type: Self.ToolsType
+                public let type: Self.ToolsType?
 
                 public init(
                     id: String,
