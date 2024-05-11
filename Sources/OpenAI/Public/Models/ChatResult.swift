@@ -73,6 +73,7 @@ public struct ChatResult: Codable, Equatable {
             case toolCalls = "tool_calls"
             case contentFilter = "content_filter"
             case functionCall = "function_call"
+            case empty = "" // Ollama bug T_T
         }
     }
 
