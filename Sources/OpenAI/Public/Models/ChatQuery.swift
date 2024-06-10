@@ -53,6 +53,9 @@ public struct ChatQuery: Equatable, Codable, Streamable {
     /// Controls which (if any) function is called by the model. none means the model will not call a function and instead generates a message. auto means the model can pick between generating a message or calling a function. Specifying a particular function via {"type": "function", "function": {"name": "my_function"}} forces the model to call that function.
     /// none is the default when no functions are present. auto is the default if functions are present
     public let toolChoice: Self.ChatCompletionFunctionCallOptionParam?
+    /// Whether to enable parallel function calling during tool use.
+    /// Default to true
+    public let parallelToolCalls: Bool?
     /// A list of tools the model may call. Currently, only functions are supported as a tool. Use this to provide a list of functions the model may generate JSON inputs for.
     public let tools: [Self.ChatCompletionToolParam]?
     /// An integer between 0 and 5 specifying the number of most likely tokens to return at each token position, each with an associated log probability. logprobs must be set to true if this parameter is used.
@@ -82,6 +85,7 @@ public struct ChatQuery: Equatable, Codable, Streamable {
         stop: Self.Stop? = nil,
         temperature: Double? = nil,
         toolChoice: Self.ChatCompletionFunctionCallOptionParam? = nil,
+        parallelToolCalls: Bool? = nil,
         tools: [Self.ChatCompletionToolParam]? = nil,
         topLogprobs: Int? = nil,
         topP: Double? = nil,
@@ -101,6 +105,7 @@ public struct ChatQuery: Equatable, Codable, Streamable {
         self.stop = stop
         self.temperature = temperature
         self.toolChoice = toolChoice
+        self.parallelToolCalls = parallelToolCalls
         self.tools = tools
         self.topLogprobs = topLogprobs
         self.topP = topP
@@ -846,6 +851,7 @@ public struct ChatQuery: Equatable, Codable, Streamable {
         case stop
         case temperature
         case toolChoice = "tool_choice"
+        case parallelToolCalls = "parallel_tool_calls"
         case tools
         case topLogprobs = "top_logprobs"
         case topP = "top_p"
