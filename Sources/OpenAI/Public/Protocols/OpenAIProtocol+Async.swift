@@ -125,7 +125,7 @@ public extension OpenAIProtocol {
         let control = StreamControl()
         
         return AsyncThrowingStream { continuation in
-            return chatsStream(query: query, control: control) { result in
+            chatsStream(query: query, control: control) { result in
                 continuation.yield(with: result)
             } completion: { error in
                 continuation.finish(throwing: error)
