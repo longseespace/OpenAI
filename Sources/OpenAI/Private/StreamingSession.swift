@@ -133,7 +133,8 @@ final class StreamingSession<ResultType: Codable>: NSObject, Identifiable, URLSe
                 // if decoding error on last item, it's most likely a partial chunk, keep it around as leftover characters for the next call
                 if index == jsonObjects.count - 1 {
                     partialContent = "data: \(jsonContent)"
-                } else {
+                } else if jsonContent != "data: " {
+                    // if json content is not empty then throw errors
                     apiError = error
                 }
             }
