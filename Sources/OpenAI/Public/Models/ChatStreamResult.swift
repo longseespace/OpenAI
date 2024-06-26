@@ -10,7 +10,7 @@ import Foundation
 public struct ChatStreamResult: Codable, Equatable {
     
     public struct Choice: Codable, Equatable {
-        public typealias FinishReason = ChatResult.Choice.FinishReason
+        public typealias FinishReason = String
 
         public struct ChoiceDelta: Codable, Equatable {
             public typealias Role = ChatQuery.ChatCompletionMessageParam.Role

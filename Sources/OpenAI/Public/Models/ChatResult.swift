@@ -67,20 +67,20 @@ public struct ChatResult: Codable, Equatable {
             case finishReason = "finish_reason"
         }
 
-        public enum FinishReason: String, Codable, Equatable {
-            case stop
-            case length
-            case toolCalls = "tool_calls"
-            case contentFilter = "content_filter"
-            case functionCall = "function_call"
-            case empty = "" // Ollama bug T_T
-            
-            // for Claude on OpenRouter
-            case endTurn = "end_turn"
-            case toolUse = "tool_use"
-            case maxTokens = "max_tokens"
-            case stopSequence = "stop_sequence"
-        }
+//        public enum FinishReason: String, Codable, Equatable {
+//            case stop
+//            case length
+//            case toolCalls = "tool_calls"
+//            case contentFilter = "content_filter"
+//            case functionCall = "function_call"
+//            case empty = "" // Ollama bug T_T
+//            
+//            // for Claude on OpenRouter
+//            case endTurn = "end_turn"
+//            case toolUse = "tool_use"
+//            case maxTokens = "max_tokens"
+//            case stopSequence = "stop_sequence"
+//        }
     }
 
     public struct CompletionUsage: Codable, Equatable {
