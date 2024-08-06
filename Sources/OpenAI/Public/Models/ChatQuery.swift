@@ -692,6 +692,9 @@ public struct ChatQuery: Equatable, Codable, Streamable {
 
             /// The description of what the function does.
             public let description: String?
+            
+            /// Whether to enable strict schema adherence when generating the function call
+            public let strict: Bool?
 
             /// The parameters the functions accepts, described as a JSON Schema object.
             /// https://platform.openai.com/docs/guides/text-generation/function-calling
@@ -702,10 +705,12 @@ public struct ChatQuery: Equatable, Codable, Streamable {
             public init(
                 name: String,
                 description: String? = nil,
+                strict: Bool? = nil,
                 parameters: Self.FunctionParameters? = nil
             ) {
                 self.name = name
                 self.description = description
+                self.strict = strict
                 self.parameters = parameters
             }
 
@@ -721,6 +726,7 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                 public let multipleOf: Int?
                 public let minimum: Int?
                 public let maximum: Int?
+                public let additionalProperties: Bool?
 
                 public init(
                     type: Self.JSONType,
@@ -731,7 +737,8 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                     enum: [String]? = nil,
                     multipleOf: Int? = nil,
                     minimum: Int? = nil,
-                    maximum: Int? = nil
+                    maximum: Int? = nil,
+                    additionalProperties: Bool? = nil
                 ) {
                     self.type = type
                     self.properties = properties
@@ -742,6 +749,7 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                     self.multipleOf = multipleOf
                     self.minimum = minimum
                     self.maximum = maximum
+                    self.additionalProperties = additionalProperties
                 }
 
                 public struct Property: Codable, Equatable {
