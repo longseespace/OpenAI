@@ -27,7 +27,7 @@ public struct CompletionsQuery: Codable, Streamable {
     /// A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
     public let user: String?
     
-    var stream: Bool = false
+    var stream: Bool? = nil
     
     enum CodingKeys: String, CodingKey {
         case model

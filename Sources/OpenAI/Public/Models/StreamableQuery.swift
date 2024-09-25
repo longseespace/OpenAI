@@ -9,7 +9,7 @@ import Foundation
 
 protocol Streamable {
     
-    var stream: Bool { get set }
+    var stream: Bool? { get set }
     func makeStreamable() -> Self
 }
 

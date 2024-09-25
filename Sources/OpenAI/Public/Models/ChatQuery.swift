@@ -69,7 +69,7 @@ public struct ChatQuery: Equatable, Codable, Streamable {
     public let user: String?
     /// If set, partial message deltas will be sent, like in ChatGPT. Tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a data: [DONE] message.
     /// https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format
-    public var stream: Bool
+    public var stream: Bool?
     /// If set, `in stream mode`, last chunk will contain usage data for the entire request. Can be obtained from  ChatStreamResult.usage.
     /// Official doc:
     /// https://cookbook.openai.com/examples/how_to_stream_completions#4-how-to-get-token-usage-data-for-streamed-chat-completion-response
@@ -94,7 +94,7 @@ public struct ChatQuery: Equatable, Codable, Streamable {
         topLogprobs: Int? = nil,
         topP: Double? = nil,
         user: String? = nil,
-        stream: Bool = false,
+        stream: Bool? = nil,
         streamOptions: Self.StreamOptions? = nil
     ) {
         self.messages = messages

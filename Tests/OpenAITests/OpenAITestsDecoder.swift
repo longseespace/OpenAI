@@ -176,8 +176,7 @@ class OpenAITestsDecoder: XCTestCase {
                     ]
                 }
             ],
-            "max_tokens": 300,
-            "stream": false
+            "max_tokens": 300
         }
         """
 
@@ -248,8 +247,7 @@ class OpenAITestsDecoder: XCTestCase {
             "function": {
               "name": "get_current_weather"
             }
-          },
-          "stream": false
+          }
         }
         """
         
