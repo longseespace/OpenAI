@@ -120,11 +120,31 @@ public struct ChatStreamResult: Codable, Equatable {
         public let completionTokens: Int
         public let promptTokens: Int
         public let totalTokens: Int
+        public let promptTokensDetails: PromptTokensDetails?
+        public let completionTokensDetails: CompletionTokensDetails?
         
         public enum CodingKeys: String, CodingKey {
             case completionTokens = "completion_tokens"
             case promptTokens = "prompt_tokens"
             case totalTokens = "total_tokens"
+            case promptTokensDetails = "prompt_tokens_details"
+            case completionTokensDetails = "completion_tokens_details"
+        }
+    }
+    
+    public struct PromptTokensDetails: Codable, Equatable {
+        public let cachedTokens: Int
+        
+        public enum CodingKeys: String, CodingKey {
+            case cachedTokens = "cached_tokens"
+        }
+    }
+    
+    public struct CompletionTokensDetails: Codable, Equatable {
+        public let ReasoningTokens: Int
+        
+        public enum CodingKeys: String, CodingKey {
+            case ReasoningTokens = "reasoning_tokens"
         }
     }
 
