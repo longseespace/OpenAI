@@ -133,18 +133,22 @@ public struct ChatStreamResult: Codable, Equatable {
     }
     
     public struct PromptTokensDetails: Codable, Equatable {
-        public let cachedTokens: Int
+        public let cachedTokens: Int?
+        public let audioTokens: Int?
         
         public enum CodingKeys: String, CodingKey {
             case cachedTokens = "cached_tokens"
+            case audioTokens = "audio_tokens"
         }
     }
     
     public struct CompletionTokensDetails: Codable, Equatable {
-        public let ReasoningTokens: Int
+        public let ReasoningTokens: Int?
+        public let audioTokens: Int?
         
         public enum CodingKeys: String, CodingKey {
             case ReasoningTokens = "reasoning_tokens"
+            case audioTokens = "audio_tokens"
         }
     }
 

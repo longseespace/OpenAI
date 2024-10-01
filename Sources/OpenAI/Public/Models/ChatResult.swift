@@ -91,11 +91,36 @@ public struct ChatResult: Codable, Equatable {
         public let promptTokens: Int
         /// Total number of tokens used in the request (prompt + completion).
         public let totalTokens: Int
+        
+        public let promptTokensDetails: PromptTokensDetails?
+        public let completionTokensDetails: CompletionTokensDetails?
 
         enum CodingKeys: String, CodingKey {
             case completionTokens = "completion_tokens"
             case promptTokens = "prompt_tokens"
             case totalTokens = "total_tokens"
+            case promptTokensDetails = "prompt_tokens_details"
+            case completionTokensDetails = "completion_tokens_details"
+        }
+    }
+    
+    public struct PromptTokensDetails: Codable, Equatable {
+        public let cachedTokens: Int?
+        public let audioTokens: Int?
+        
+        public enum CodingKeys: String, CodingKey {
+            case cachedTokens = "cached_tokens"
+            case audioTokens = "audio_tokens"
+        }
+    }
+    
+    public struct CompletionTokensDetails: Codable, Equatable {
+        public let ReasoningTokens: Int?
+        public let audioTokens: Int?
+        
+        public enum CodingKeys: String, CodingKey {
+            case ReasoningTokens = "reasoning_tokens"
+            case audioTokens = "audio_tokens"
         }
     }
 
