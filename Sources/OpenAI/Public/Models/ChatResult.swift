@@ -107,10 +107,12 @@ public struct ChatResult: Codable, Equatable {
     public struct PromptTokensDetails: Codable, Equatable {
         public let cachedTokens: Int?
         public let audioTokens: Int?
+        public let imageTokens: Int? // xai
         
         public enum CodingKeys: String, CodingKey {
             case cachedTokens = "cached_tokens"
             case audioTokens = "audio_tokens"
+            case imageTokens = "image_tokens"
         }
     }
     
