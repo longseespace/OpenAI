@@ -175,6 +175,8 @@ public struct ChatStreamResult: Codable, Equatable {
     public let systemFingerprint: String?
     /// In stream mode, if `streamOptions` are set in the request, return token usage data.
     public let usage: Self.Usage?
+    /// Citations for the generated answer.
+    public let citations: [String]?
 
     public enum CodingKeys: String, CodingKey {
         case id
@@ -184,5 +186,6 @@ public struct ChatStreamResult: Codable, Equatable {
         case choices
         case systemFingerprint = "system_fingerprint"
         case usage
+        case citations
     }
 }

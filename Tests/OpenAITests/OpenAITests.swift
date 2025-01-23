@@ -109,7 +109,7 @@ class OpenAITests: XCTestCase {
             .init(index: 0, logprobs: nil, message: .system(.init(content: "bar")), finishReason: "baz"),
             .init(index: 0, logprobs: nil, message: .user(.init(content: .string("bar1"))), finishReason: "baz1"),
             .init(index: 0, logprobs: nil, message: .assistant(.init(content: "bar2")), finishReason: "baz2")
-        ], usage: .init(completionTokens: 200, promptTokens: 100, totalTokens: 300, promptTokensDetails: nil, completionTokensDetails: nil), systemFingerprint: nil)
+        ], usage: .init(completionTokens: 200, promptTokens: 100, totalTokens: 300, promptTokensDetails: nil, completionTokensDetails: nil), systemFingerprint: nil, citations: nil)
        try self.stub(result: chatResult)
         
        let result = try await openAI.chats(query: query)
@@ -131,7 +131,7 @@ class OpenAITests: XCTestCase {
          .init(index: 0, logprobs: nil, message: .system(.init(content: "bar")), finishReason: "baz"),
          .init(index: 0, logprobs: nil, message: .user(.init(content: .string("bar1"))), finishReason: "baz1"),
          .init(index: 0, logprobs: nil, message: .assistant(.init(content: "bar2")), finishReason: "baz2")
-         ], usage: .init(completionTokens: 200, promptTokens: 100, totalTokens: 300, promptTokensDetails: nil, completionTokensDetails: nil), systemFingerprint: nil)
+        ], usage: .init(completionTokens: 200, promptTokens: 100, totalTokens: 300, promptTokensDetails: nil, completionTokensDetails: nil), systemFingerprint: nil, citations: nil)
         try self.stub(result: chatResult)
         
         let result = try await openAI.chats(query: query)

@@ -114,7 +114,7 @@ class OpenAITestsDecoder: XCTestCase {
         
         let expectedValue = ChatResult(id: "chatcmpl-123", object: "chat.completion", created: 1677652288, model: .gpt4, choices: [
             .init(index: 0, logprobs: nil, message: .assistant(.init(content: "Hello, world!")), finishReason: "stop")
-        ], usage: .init(completionTokens: 12, promptTokens: 9, totalTokens: 21, promptTokensDetails: nil, completionTokensDetails: nil), systemFingerprint: nil)
+        ], usage: .init(completionTokens: 12, promptTokens: 9, totalTokens: 21, promptTokensDetails: nil, completionTokensDetails: nil), systemFingerprint: nil, citations: nil)
         try decode(data, expectedValue)
     }
     
@@ -300,7 +300,7 @@ class OpenAITestsDecoder: XCTestCase {
                         .assistant(.init(toolCalls: [.init(id: "chatcmpl-1234", function: .init(arguments: "", name: "get_current_weather"))])), finishReason: "tool_calls")
             ],
             usage: .init(completionTokens: 18, promptTokens: 82, totalTokens: 100, promptTokensDetails: nil, completionTokensDetails: nil),
-            systemFingerprint: nil)
+            systemFingerprint: nil, citations: nil)
         try decode(data, expectedValue)
     }
 

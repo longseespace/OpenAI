@@ -141,6 +141,8 @@ public struct ChatResult: Codable, Equatable {
     /// This fingerprint represents the backend configuration that the model runs with.
     /// Can be used in conjunction with the seed request parameter to understand when backend changes have been made that might impact determinism.
     public let systemFingerprint: String?
+    /// Citations for the generated answer.
+    public let citations: [String]?
 
     public enum CodingKeys: String, CodingKey {
         case id
@@ -150,6 +152,7 @@ public struct ChatResult: Codable, Equatable {
         case choices
         case usage
         case systemFingerprint = "system_fingerprint"
+        case citations
     }
 }
 
