@@ -74,6 +74,14 @@ public struct ChatQuery: Equatable, Codable, Streamable {
     /// Official doc:
     /// https://cookbook.openai.com/examples/how_to_stream_completions#4-how-to-get-token-usage-data-for-streamed-chat-completion-response
     public let streamOptions: Self.StreamOptions?
+    
+    /// Constrains effort on reasoning for reasoning models. Currently supported values are low, medium, and high.
+    /// Reducing reasoning effort can result in faster responses and fewer tokens used on reasoning in a response.
+    public let reasoningEffort: Self.ReasoningEffort?
+    
+    /// OpenRouter. Whether to return the model's reasoning. Default false.
+    /// Text will appear in the "reasoning" field on each message prior to those containing "content".
+    public let includeReasoning: Bool?
 
     public init(
         messages: [Self.ChatCompletionMessageParam],
@@ -95,7 +103,9 @@ public struct ChatQuery: Equatable, Codable, Streamable {
         topP: Double? = nil,
         user: String? = nil,
         stream: Bool? = nil,
-        streamOptions: Self.StreamOptions? = nil
+        streamOptions: Self.StreamOptions? = nil,
+        reasoningEffort: Self.ReasoningEffort? = nil,
+        includeReasoning: Bool? = nil
     ) {
         self.messages = messages
         self.model = model
@@ -117,6 +127,8 @@ public struct ChatQuery: Equatable, Codable, Streamable {
         self.user = user
         self.stream = stream
         self.streamOptions = streamOptions
+        self.reasoningEffort = reasoningEffort
+        self.includeReasoning = includeReasoning
     }
     
     public struct StreamOptions: Codable, Equatable {
@@ -129,6 +141,12 @@ public struct ChatQuery: Equatable, Codable, Streamable {
         public enum CodingKeys: String, CodingKey {
             case includeUsage = "include_usage"
         }
+    }
+    
+    public enum ReasoningEffort: String, Codable, Equatable {
+        case low
+        case medium
+        case high
     }
 
     public enum ChatCompletionMessageParam: Codable, Equatable {
@@ -891,6 +909,8 @@ public struct ChatQuery: Equatable, Codable, Streamable {
         case user
         case stream
         case streamOptions = "stream_options"
+        case reasoningEffort = "reasoning_effort"
+        case includeReasoning = "include_reasoning"
     }
 }
 

@@ -21,6 +21,9 @@ public struct ChatStreamResult: Codable, Equatable {
             /// For deepseek-reasoner model only. The reasoning contents of the assistant message, before the final answer.
             public let reasoningContent: String?
             
+            /// For OpenRouter reasoning model only. The reasoning contents of the assistant message, before the final answer.
+            public let reasoning: String?
+            
             /// The role of the author of this message.
             public let role: Self.Role?
             public let toolCalls: [Self.ChoiceDeltaToolCall]?
@@ -66,6 +69,7 @@ public struct ChatStreamResult: Codable, Equatable {
             public enum CodingKeys: String, CodingKey {
                 case content
                 case reasoningContent = "reasoning_content"
+                case reasoning
                 case role
                 case toolCalls = "tool_calls"
             }
@@ -150,11 +154,11 @@ public struct ChatStreamResult: Codable, Equatable {
     }
     
     public struct CompletionTokensDetails: Codable, Equatable {
-        public let ReasoningTokens: Int?
+        public let reasoningTokens: Int?
         public let audioTokens: Int?
         
         public enum CodingKeys: String, CodingKey {
-            case ReasoningTokens = "reasoning_tokens"
+            case reasoningTokens = "reasoning_tokens"
             case audioTokens = "audio_tokens"
         }
     }
