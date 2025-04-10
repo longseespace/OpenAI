@@ -753,17 +753,26 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                 public let maximum: Int?
                 public let additionalProperties: Bool?
 
+                // Schema composition
+                public let anyOf: [FunctionParameters]?
+                public let oneOf: [FunctionParameters]?
+                public let allOf: [FunctionParameters]?
+
                 public init(
                     type: Self.JSONType,
                     properties: [String : Property]? = nil,
                     required: [String]? = nil,
                     pattern: String? = nil,
                     const: String? = nil,
-                    enum: [String]? = nil,
+                    `enum`: [String]? = nil,
                     multipleOf: Int? = nil,
                     minimum: Int? = nil,
                     maximum: Int? = nil,
-                    additionalProperties: Bool? = nil
+                    additionalProperties: Bool? = nil,
+                    // Schema composition
+                    anyOf: [FunctionParameters]? = nil,
+                    oneOf: [FunctionParameters]? = nil,
+                    allOf: [FunctionParameters]? = nil
                 ) {
                     self.type = type
                     self.properties = properties
@@ -775,6 +784,16 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                     self.minimum = minimum
                     self.maximum = maximum
                     self.additionalProperties = additionalProperties
+                    self.anyOf = anyOf
+                    self.oneOf = oneOf
+                    self.allOf = allOf
+                }
+
+                private enum CodingKeys: String, CodingKey {
+                    case type, properties, required, pattern, const
+                    case `enum`
+                    case multipleOf, minimum, maximum, additionalProperties
+                    case anyOf, oneOf, allOf
                 }
 
                 public struct Property: Codable, Equatable {
@@ -794,6 +813,12 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                     public let minItems: Int?
                     public let maxItems: Int?
                     public let uniqueItems: Bool?
+                    public let properties: [String: Property]?
+
+                    // Schema composition
+                    public let anyOf: [Property]?
+                    public let oneOf: [Property]?
+                    public let allOf: [Property]?
 
                     public init(
                         type: Self.JSONType,
@@ -803,13 +828,18 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                         required: [String]? = nil,
                         pattern: String? = nil,
                         const: String? = nil,
-                        enum: [String]? = nil,
+                        `enum`: [String]? = nil,
                         multipleOf: Int? = nil,
                         minimum: Double? = nil,
                         maximum: Double? = nil,
                         minItems: Int? = nil,
                         maxItems: Int? = nil,
-                        uniqueItems: Bool? = nil
+                        uniqueItems: Bool? = nil,
+                        properties: [String : Property]? = nil,
+                        // Schema composition
+                        anyOf: [Property]? = nil,
+                        oneOf: [Property]? = nil,
+                        allOf: [Property]? = nil
                     ) {
                         self.type = type
                         self.description = description
@@ -825,6 +855,17 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                         self.minItems = minItems
                         self.maxItems = maxItems
                         self.uniqueItems = uniqueItems
+                        self.properties = properties
+                        self.anyOf = anyOf
+                        self.oneOf = oneOf
+                        self.allOf = allOf
+                    }
+
+                    private enum CodingKeys: String, CodingKey {
+                        case type, description, format, items, required, pattern, const
+                        case `enum`
+                        case multipleOf, minimum, maximum, minItems, maxItems, uniqueItems, properties
+                        case anyOf, oneOf, allOf
                     }
 
                     public struct Items: Codable, Equatable {
@@ -842,6 +883,11 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                         public let maxItems: Int?
                         public let uniqueItems: Bool?
 
+                        // Schema composition
+                        public let anyOf: [Items]?
+                        public let oneOf: [Items]?
+                        public let allOf: [Items]?
+
                         public init(
                             type: Self.JSONType,
                             properties: [String : Property]? = nil,
@@ -853,7 +899,11 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                             maximum: Double? = nil,
                             minItems: Int? = nil,
                             maxItems: Int? = nil,
-                            uniqueItems: Bool? = nil
+                            uniqueItems: Bool? = nil,
+                            // Schema composition
+                            anyOf: [Items]? = nil,
+                            oneOf: [Items]? = nil,
+                            allOf: [Items]? = nil
                         ) {
                             self.type = type
                             self.properties = properties
@@ -866,10 +916,19 @@ public struct ChatQuery: Equatable, Codable, Streamable {
                             self.minItems = minItems
                             self.maxItems = maxItems
                             self.uniqueItems = uniqueItems
+                            self.anyOf = anyOf
+                            self.oneOf = oneOf
+                            self.allOf = allOf
+                        }
+
+                        private enum CodingKeys: String, CodingKey {
+                            case type, properties, pattern, const
+                            case `enum`
+                            case multipleOf, minimum, maximum, minItems, maxItems, uniqueItems
+                            case anyOf, oneOf, allOf
                         }
                     }
                 }
-
 
                 public enum JSONType: String, Codable {
                     case integer
@@ -916,23 +975,34 @@ public struct ChatQuery: Equatable, Codable, Streamable {
 
 /// See the [guide](/docs/guides/gpt/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
 public struct JSONSchema: Codable, Hashable {
+    public typealias JSONType = ChatQuery.ChatCompletionToolParam.FunctionDefinition.FunctionParameters.JSONType
+    
     public let type: JSONType
     public let properties: [String: Property]?
     public let required: [String]?
     public let pattern: String?
     public let const: String?
-    public let enumValues: [String]?
+    public let `enum`: [String]?
     public let multipleOf: Int?
     public let minimum: Int?
     public let maximum: Int?
 
+    // Schema composition
+    public let anyOf: [JSONSchema]?
+    public let oneOf: [JSONSchema]?
+    public let allOf: [JSONSchema]?
+
     private enum CodingKeys: String, CodingKey {
         case type, properties, required, pattern, const
-        case enumValues = "enum"
+        case `enum`
         case multipleOf, minimum, maximum
+        // Add new keys
+        case anyOf, oneOf, allOf
     }
 
     public struct Property: Codable, Hashable {
+        public typealias JSONType = ChatQuery.ChatCompletionToolParam.FunctionDefinition.FunctionParameters.JSONType
+        
         public let type: JSONType
         public let description: String?
         public let format: String?
@@ -940,22 +1010,30 @@ public struct JSONSchema: Codable, Hashable {
         public let required: [String]?
         public let pattern: String?
         public let const: String?
-        public let enumValues: [String]?
+        public let `enum`: [String]?
         public let multipleOf: Int?
         public let minimum: Double?
         public let maximum: Double?
         public let minItems: Int?
         public let maxItems: Int?
         public let uniqueItems: Bool?
+        public let properties: [String: Property]?
+
+        // Schema composition
+        public let anyOf: [Property]?
+        public let oneOf: [Property]?
+        public let allOf: [Property]?
 
         private enum CodingKeys: String, CodingKey {
             case type, description, format, items, required, pattern, const
-            case enumValues = "enum"
+            case `enum`
             case multipleOf, minimum, maximum
-            case minItems, maxItems, uniqueItems
+            case minItems, maxItems, uniqueItems, properties
+            // Add new keys
+            case anyOf, oneOf, allOf
         }
 
-        public init(type: JSONType, description: String? = nil, format: String? = nil, items: Items? = nil, required: [String]? = nil, pattern: String? = nil, const: String? = nil, enumValues: [String]? = nil, multipleOf: Int? = nil, minimum: Double? = nil, maximum: Double? = nil, minItems: Int? = nil, maxItems: Int? = nil, uniqueItems: Bool? = nil) {
+        public init(type: JSONType, description: String? = nil, format: String? = nil, items: Items? = nil, required: [String]? = nil, pattern: String? = nil, const: String? = nil, `enum`: [String]? = nil, multipleOf: Int? = nil, minimum: Double? = nil, maximum: Double? = nil, minItems: Int? = nil, maxItems: Int? = nil, uniqueItems: Bool? = nil, properties: [String: Property]? = nil, anyOf: [Property]? = nil, oneOf: [Property]? = nil, allOf: [Property]? = nil) {
             self.type = type
             self.description = description
             self.format = format
@@ -963,24 +1041,18 @@ public struct JSONSchema: Codable, Hashable {
             self.required = required
             self.pattern = pattern
             self.const = const
-            self.enumValues = enumValues
+            self.`enum` = `enum`
             self.multipleOf = multipleOf
             self.minimum = minimum
             self.maximum = maximum
             self.minItems = minItems
             self.maxItems = maxItems
             self.uniqueItems = uniqueItems
+            self.properties = properties
+            self.anyOf = anyOf
+            self.oneOf = oneOf
+            self.allOf = allOf
         }
-    }
-
-    public enum JSONType: String, Codable {
-        case integer = "integer"
-        case string = "string"
-        case boolean = "boolean"
-        case array = "array"
-        case object = "object"
-        case number = "number"
-        case `null` = "null"
     }
 
     public struct Items: Codable, Hashable {
@@ -988,7 +1060,7 @@ public struct JSONSchema: Codable, Hashable {
         public let properties: [String: Property]?
         public let pattern: String?
         public let const: String?
-        public let enumValues: [String]?
+        public let `enum`: [String]?
         public let multipleOf: Int?
         public let minimum: Double?
         public let maximum: Double?
@@ -996,37 +1068,50 @@ public struct JSONSchema: Codable, Hashable {
         public let maxItems: Int?
         public let uniqueItems: Bool?
 
+        // Schema composition
+        public let anyOf: [Items]?
+        public let oneOf: [Items]?
+        public let allOf: [Items]?
+
         private enum CodingKeys: String, CodingKey {
             case type, properties, pattern, const
-            case enumValues = "enum"
+            case `enum`
             case multipleOf, minimum, maximum, minItems, maxItems, uniqueItems
+            // Add new keys
+            case anyOf, oneOf, allOf
         }
 
-        public init(type: JSONType, properties: [String : Property]? = nil, pattern: String? = nil, const: String? = nil, enumValues: [String]? = nil, multipleOf: Int? = nil, minimum: Double? = nil, maximum: Double? = nil, minItems: Int? = nil, maxItems: Int? = nil, uniqueItems: Bool? = nil) {
+        public init(type: JSONType, properties: [String : Property]? = nil, pattern: String? = nil, const: String? = nil, `enum`: [String]? = nil, multipleOf: Int? = nil, minimum: Double? = nil, maximum: Double? = nil, minItems: Int? = nil, maxItems: Int? = nil, uniqueItems: Bool? = nil, anyOf: [Items]? = nil, oneOf: [Items]? = nil, allOf: [Items]? = nil) {
             self.type = type
             self.properties = properties
             self.pattern = pattern
             self.const = const
-            self.enumValues = enumValues
+            self.`enum` = `enum`
             self.multipleOf = multipleOf
             self.minimum = minimum
             self.maximum = maximum
             self.minItems = minItems
             self.maxItems = maxItems
             self.uniqueItems = uniqueItems
+            self.anyOf = anyOf
+            self.oneOf = oneOf
+            self.allOf = allOf
         }
     }
 
-    public init(type: JSONType, properties: [String : Property]? = nil, required: [String]? = nil, pattern: String? = nil, const: String? = nil, enumValues: [String]? = nil, multipleOf: Int? = nil, minimum: Int? = nil, maximum: Int? = nil) {
+    public init(type: JSONType, properties: [String : Property]? = nil, required: [String]? = nil, pattern: String? = nil, const: String? = nil, `enum`: [String]? = nil, multipleOf: Int? = nil, minimum: Int? = nil, maximum: Int? = nil, anyOf: [JSONSchema]? = nil, oneOf: [JSONSchema]? = nil, allOf: [JSONSchema]? = nil) {
         self.type = type
         self.properties = properties
         self.required = required
         self.pattern = pattern
         self.const = const
-        self.enumValues = enumValues
+        self.`enum` = `enum`
         self.multipleOf = multipleOf
         self.minimum = minimum
         self.maximum = maximum
+        self.anyOf = anyOf
+        self.oneOf = oneOf
+        self.allOf = allOf
     }
 }
 
