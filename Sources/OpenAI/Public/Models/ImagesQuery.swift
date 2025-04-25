@@ -120,10 +120,13 @@ public struct ImagesQuery: Codable, Equatable {
     }
 
     public enum Size: String, Codable, CaseIterable {
-        case _256 = "256x256"
-        case _512 = "512x512"
-        case _1024 = "1024x1024"
-        case _1792_1024 = "1792x1024" // for dall-e-3 models
-        case _1024_1792 = "1024x1792" // for dall-e-3 models
+        case auto // Default, gpt-image-1
+        case _256 = "256x256" // dall-e-2
+        case _512 = "512x512" // dall-e-2
+        case _1024 = "1024x1024" // gpt-image-1, dall-e-2, dall-e-3
+        case _1536_1024 = "1536x1024" // landscape, gpt-image-1
+        case _1024_1536 = "1024x1536" // portrait, gpt-image-1
+        case _1792_1024 = "1792x1024" // dall-e-3
+        case _1024_1792 = "1024x1792" // dall-e-3
     }
 }
