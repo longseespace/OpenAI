@@ -10,6 +10,7 @@ import Foundation
 public struct ImageEditsQuery: Codable {
     public typealias ResponseFormat = ImagesQuery.ResponseFormat
     public typealias Size = ImagesQuery.Size
+    public typealias Quality = ImagesQuery.Quality
 
     /// The image(s) to edit. Must be supported image file(s) (e.g., PNG, JPG, WEBP).
     /// For `gpt-image-1`, each image must be less than 25MB.
@@ -26,6 +27,8 @@ public struct ImageEditsQuery: Codable {
     public let model: Model?
     /// The number of images to generate. Must be between 1 and 10. (DALL·E 2 only)
     public let n: Int?
+    /// The quality of the image that will be generated. `high`, `medium` and `low` are only supported for `gpt-image-1`. `dall-e-2` only supports `standard` quality. Defaults to `auto`.
+    public let quality: Quality?
     /// The format in which the generated images are returned. Must be one of url or b64_json.
     /// Defaults to url
     public let responseFormat: Self.ResponseFormat?
@@ -41,6 +44,7 @@ public struct ImageEditsQuery: Codable {
         mask: Data? = nil,
         model: Model? = nil,
         n: Int? = nil,
+        quality: Quality? = nil,
         responseFormat: Self.ResponseFormat? = nil,
         size: Self.Size? = nil,
         user: String? = nil
@@ -50,6 +54,7 @@ public struct ImageEditsQuery: Codable {
         self.prompt = prompt
         self.model = model
         self.n = n
+        self.quality = quality
         self.responseFormat = responseFormat
         self.size = size
         self.user = user
@@ -62,11 +67,12 @@ public struct ImageEditsQuery: Codable {
         mask: Data? = nil,
         model: Model? = nil,
         n: Int? = nil,
+        quality: Quality? = nil,
         responseFormat: Self.ResponseFormat? = nil,
         size: Self.Size? = nil,
         user: String? = nil
     ) {
-        self.init(image: [image], prompt: prompt, mask: mask, model: model, n: n, responseFormat: responseFormat, size: size, user: user)
+        self.init(image: [image], prompt: prompt, mask: mask, model: model, n: n, quality: quality, responseFormat: responseFormat, size: size, user: user)
     }
 
     public enum CodingKeys: String, CodingKey {
@@ -78,6 +84,7 @@ public struct ImageEditsQuery: Codable {
         case responseFormat = "response_format"
         case size
         case user
+        case quality
     }
 }
 
@@ -114,6 +121,9 @@ extension ImageEditsQuery: MultipartFormDataBodyEncodable {
         }
         if let userValue = user {
             entries.append(MultipartFormDataEntry.string(paramName: "user", value: userValue))
+        }
+        if let qualityValue = quality?.rawValue {
+            entries.append(MultipartFormDataEntry.string(paramName: "quality", value: qualityValue))
         }
 
         let bodyBuilder = MultipartFormDataBodyBuilder(boundary: boundary, entries: entries)
