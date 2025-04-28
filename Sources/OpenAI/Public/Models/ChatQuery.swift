@@ -27,10 +27,16 @@ public struct ChatQuery: Equatable, Codable, Streamable {
     /// Whether to return log probabilities of the output tokens or not. If true, returns the log probabilities of each output token returned in the content of message. This option is currently not available on the gpt-4-vision-preview model.
     /// Defaults to false
     public let logprobs: Bool?
-    /// The maximum number of tokens to generate in the completion.
+    /// The maximum number of [tokens](/tokenizer) to generate in the completion.
+    ///
     /// The total length of input tokens and generated tokens is limited by the model's context length.
-    /// https://platform.openai.com/tokenizer
+    ///
+    /// Deprecated in favor of `maxCompletionTokens`. This parameter is not compatible with o-series models.
+    @available(*, deprecated, message: "Deprecated in favor of maxCompletionTokens. Not compatible with o-series models.")
     public let maxTokens: Int?
+    /// An upper bound for the number of tokens that can be generated for a completion, including visible output tokens and reasoning tokens.
+    /// This value can be used to control costs for text generated via API.
+    public let maxCompletionTokens: Int?
     /// How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep n as 1 to minimize costs.
     /// Defaults to 1
     public let n: Int?
@@ -90,6 +96,7 @@ public struct ChatQuery: Equatable, Codable, Streamable {
         logitBias: [String : Int]? = nil,
         logprobs: Bool? = nil,
         maxTokens: Int? = nil,
+        maxCompletionTokens: Int? = nil,
         n: Int? = nil,
         presencePenalty: Double? = nil,
         responseFormat: Self.ResponseFormat? = nil,
@@ -113,6 +120,7 @@ public struct ChatQuery: Equatable, Codable, Streamable {
         self.logitBias = logitBias
         self.logprobs = logprobs
         self.maxTokens = maxTokens
+        self.maxCompletionTokens = maxCompletionTokens
         self.n = n
         self.presencePenalty = presencePenalty
         self.responseFormat = responseFormat
@@ -954,6 +962,7 @@ public struct ChatQuery: Equatable, Codable, Streamable {
         case logitBias = "logit_bias"
         case logprobs
         case maxTokens = "max_tokens"
+        case maxCompletionTokens = "max_completion_tokens"
         case n
         case presencePenalty = "presence_penalty"
         case responseFormat = "response_format"
