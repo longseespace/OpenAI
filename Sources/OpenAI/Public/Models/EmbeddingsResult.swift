@@ -16,7 +16,7 @@ public struct EmbeddingsResult: Codable, Equatable {
         /// https://platform.openai.com/docs/guides/embeddings
         public let embedding: [Double]
         /// The index of the embedding in the list of embeddings.
-        public let index: Int
+        public let index: Int?
     }
     
     public struct Usage: Codable, Equatable {
@@ -31,7 +31,7 @@ public struct EmbeddingsResult: Codable, Equatable {
     
     public let data: [Embedding]
     public let model: String
-    public let usage: Usage
+    public let usage: Usage?
     /// The object type, which is always "list".
     public let object: String
 }
